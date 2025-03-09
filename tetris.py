@@ -79,15 +79,17 @@ class Tetris:
         pygame.display.set_caption("테트리스")
         self.clock = pygame.time.Clock()
         
-        # Mac에서 한글 지원 폰트 설정
+        # 한글 지원 폰트 설정
         try:
-            # MacOS 기본 한글 지원 폰트들
-            mac_fonts = ['AppleGothic', 'Apple SD Gothic Neo', 'Nanum Gothic', 'NanumGothic']
+            # 한글 지원 폰트들
+            korean_fonts = ['AppleGothic', 'Apple SD Gothic Neo', 'Nanum Gothic', 'NanumGothic', 'Malgun Gothic', '맑은 고딕']
             font_found = False
             
-            for font_name in mac_fonts:
+            for font_name in korean_fonts:
                 try:
                     self.font = pygame.font.SysFont(font_name, 36)
+                    self.title_font = pygame.font.SysFont(font_name, 48)
+                    self.game_over_font = pygame.font.SysFont(font_name, 72)
                     # 테스트 렌더링으로 폰트 지원 확인
                     test = self.font.render('테스트', True, WHITE)
                     font_found = True
@@ -98,8 +100,12 @@ class Tetris:
             if not font_found:
                 # 폴백: 기본 폰트 사용
                 self.font = pygame.font.SysFont(None, 36)
+                self.title_font = pygame.font.SysFont(None, 48)
+                self.game_over_font = pygame.font.SysFont(None, 72)
         except:
             self.font = pygame.font.SysFont(None, 36)
+            self.title_font = pygame.font.SysFont(None, 48)
+            self.game_over_font = pygame.font.SysFont(None, 72)
         
         # 더블 버퍼링을 위한 서피스 생성
         self.buffer = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -373,8 +379,7 @@ class Tetris:
         overlay.fill((0, 0, 0, 128))
         self.buffer.blit(overlay, (0, 0))
         
-        game_over_font = pygame.font.SysFont(None, 72)
-        game_over_text = game_over_font.render("GAME OVER", True, WHITE)
+        game_over_text = self.game_over_font.render("GAME OVER", True, WHITE)
         restart_text = self.font.render("R 키를 눌러 재시작", True, WHITE)
         
         self.buffer.blit(
@@ -443,8 +448,7 @@ class Tetris:
     def draw_start_screen(self):
         # 시작 화면 그리기
         self.buffer.fill(BLACK)
-        title_font = pygame.font.SysFont(None, 48)  # 포인트 크기 줄임
-        title_text = title_font.render("BCAI 테트리스", True, WHITE)  # 타이틀 변경
+        title_text = self.title_font.render("BCAI 테트리스", True, WHITE)
         start_text = self.font.render("시작하려면 스페이스바를 누르세요", True, WHITE)
         
         self.buffer.blit(title_text, (SCREEN_WIDTH // 2 - title_text.get_width() // 2, SCREEN_HEIGHT // 2 - 100))
